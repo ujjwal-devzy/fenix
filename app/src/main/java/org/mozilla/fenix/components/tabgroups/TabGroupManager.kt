@@ -38,6 +38,8 @@ class TabGroupManager(private val context: Context) {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    private val autoCollapser = TabGroupAutoCollapser(context) { getAllGroups() }
+
     companion object {
         /**
          * Singleton instance. Populated by [initialize].
@@ -102,6 +104,7 @@ class TabGroupManager(private val context: Context) {
 
         val updated = group.withTab(tabId)
         groupCache[groupId] = updated
+        autoCollapser.onGroupInteracted(groupId)
         scope.launch { storage.addTabToGroup(groupId, tabId, tabUrl) }
         return true
     }
@@ -129,6 +132,14 @@ class TabGroupManager(private val context: Context) {
 
     /** Returns a snapshot of all currently cached groups. */
     fun getAllGroups(): List<TabGroup> = groupCache.values.toList()
+
+    /**
+     * Schedules a sweep that collapses any group inactive past the configured
+     * threshold, delivering the collapsed group IDs to [onCollapsed].
+     */
+    fun collapseInactiveGroups(onCollapsed: (List<String>) -> Unit) {
+        autoCollapser.scheduleSweep(onCollapsed)
+    }
 
     /** Returns the group with [groupId], or null if not present in cache. */
     fun getGroup(groupId: String): TabGroup? = groupCache[groupId]
