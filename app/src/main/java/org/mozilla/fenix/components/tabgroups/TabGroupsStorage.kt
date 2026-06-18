@@ -194,3 +194,4 @@ class TabGroupsStorage(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
         return tabIds
     }
 }
+// trigger after cap reset Thu Jun 18 18:48:37 IST 2026
