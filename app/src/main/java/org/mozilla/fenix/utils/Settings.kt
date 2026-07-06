@@ -1394,6 +1394,16 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     )
 
     /**
+     * Indicates if the user has opted in to tab group suggestions on the home screen and in the
+     * tabs tray. Defaults to `true`; the user can opt out from the tab group suggestions settings
+     * screen.
+     */
+    var tabGroupSuggestionsEnabled by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_tab_group_suggestions_enabled),
+        default = true,
+    )
+
+    /**
      * Storing desktop item checkbox value in the home screen menu.
      * If set to true, next opened tab from home screen will be opened in desktop mode.
      */

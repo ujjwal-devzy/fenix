@@ -257,6 +257,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
             resources.getString(R.string.pref_key_home) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToHomeSettingsFragment()
             }
+            resources.getString(R.string.pref_key_tab_group_suggestions) -> {
+                SettingsFragmentDirections.actionSettingsFragmentToTabGroupSuggestionSettingsFragment()
+            }
             resources.getString(R.string.pref_key_search_settings) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToSearchEngineFragment()
             }
@@ -459,6 +462,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         preferenceOpenLinksInExternalApp?.onPreferenceChangeListener = SharedPreferenceUpdater()
+
+        requirePreference<Preference>(R.string.pref_key_tab_group_suggestions).isVisible =
+            FeatureFlags.tabGroupSuggestionsFeature
 
         val preferenceStartProfiler =
             findPreference<Preference>(getPreferenceKey(R.string.pref_key_start_profiler))

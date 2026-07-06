@@ -10,6 +10,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.google.android.play.core.review.ReviewManagerFactory
+import kotlinx.coroutines.MainScope
 import mozilla.components.feature.addons.AddonManager
 import mozilla.components.feature.addons.amo.AddonCollectionProvider
 import mozilla.components.feature.addons.migration.DefaultSupportedAddonsChecker
@@ -26,6 +27,12 @@ import org.mozilla.fenix.autofill.AutofillSearchActivity
 import org.mozilla.fenix.autofill.AutofillUnlockActivity
 import org.mozilla.fenix.components.appstate.AppState
 import org.mozilla.fenix.components.metrics.MetricsMiddleware
+import org.mozilla.fenix.components.tabgroupsuggestions.DefaultTabGroupSuggestionRepository
+import org.mozilla.fenix.components.tabgroupsuggestions.TabGroupSuggestionEngine
+import org.mozilla.fenix.components.tabgroupsuggestions.TabGroupSuggestionPreferences
+import org.mozilla.fenix.components.tabgroupsuggestions.TabGroupSuggestionTelemetry
+import org.mozilla.fenix.components.tabgroupsuggestions.store.TabGroupSuggestionMiddleware
+import org.mozilla.fenix.components.tabgroupsuggestions.store.TabGroupSuggestionStore
 import org.mozilla.fenix.datastore.pocketStoriesSelectedCategoriesDataStore
 import org.mozilla.fenix.ext.asRecentTabs
 import org.mozilla.fenix.ext.components
@@ -180,6 +187,31 @@ class Components(private val context: Context) {
     val appStartReasonProvider by lazyMonitored { AppStartReasonProvider() }
     val startupActivityLog by lazyMonitored { StartupActivityLog() }
     val startupStateProvider by lazyMonitored { StartupStateProvider(startupActivityLog, appStartReasonProvider) }
+
+    val tabGroupSuggestionPreferences by lazyMonitored { TabGroupSuggestionPreferences(context) }
+
+    val tabGroupSuggestionRepository by lazyMonitored {
+        DefaultTabGroupSuggestionRepository(tabGroupSuggestionPreferences)
+    }
+
+    val tabGroupSuggestionEngine by lazyMonitored {
+        TabGroupSuggestionEngine(
+            publicSuffixList = publicSuffixList,
+            historyStorage = core.historyStorage,
+        )
+    }
+
+    val tabGroupSuggestionStore by lazyMonitored {
+        TabGroupSuggestionStore(
+            middlewares = listOf(
+                TabGroupSuggestionMiddleware(
+                    repository = tabGroupSuggestionRepository,
+                    telemetry = TabGroupSuggestionTelemetry(),
+                    scope = MainScope(),
+                ),
+            ),
+        )
+    }
 
     val appStore by lazyMonitored {
         val blocklistHandler = BlocklistHandler(settings)

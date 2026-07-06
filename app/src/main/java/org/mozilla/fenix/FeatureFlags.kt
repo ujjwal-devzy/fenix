@@ -78,4 +78,11 @@ object FeatureFlags {
      * Feature flag tracking: https://github.com/mozilla-mobile/fenix/issues/27759
      * */
     val storageMaintenanceFeature = Config.channel.isNightlyOrDebug || Config.channel.isBeta
+
+    /**
+     * Enables tab group suggestions: a home screen card and tabs tray action that recommend
+     * grouping a user's currently open tabs based on domain, recency, frequency and title
+     * similarity.
+     */
+    val tabGroupSuggestionsFeature = Config.channel.isNightlyOrDebug || Config.channel.isBeta
 }

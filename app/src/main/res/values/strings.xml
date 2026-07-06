@@ -1953,6 +1953,36 @@
     <!-- Snackbar button text to navigate to telemetry settings.-->
     <string name="experiments_snackbar_button">Go to settings</string>
 
+    <!-- Tab group suggestions -->
+    <!-- Title of the card shown on the home screen suggesting the user group some of their open tabs. -->
+    <string name="tab_group_suggestions_card_title">Group these tabs?</string>
+    <!-- Subtitle of the tab group suggestion card. The first parameter is the number of tabs in the
+         suggestion, the second parameter is the suggested name for the group, e.g. "3 tabs · github.com" -->
+    <string name="tab_group_suggestions_card_subtitle">%1$d tabs · %2$s</string>
+    <!-- Text of the button used to accept a tab group suggestion and save the suggested tabs together. -->
+    <string name="tab_group_suggestions_card_action">Save tabs together</string>
+    <!-- Text shown below the list of suggested tabs when there are more tabs in the suggestion than
+         can be displayed. The parameter is the number of additional tabs not shown. -->
+    <string name="tab_group_suggestions_card_more_tabs">+%1$d more</string>
+    <!-- Text shown on the tab group suggestion card while a new suggestion is being computed. -->
+    <string name="tab_group_suggestions_loading_state">Looking for tabs to group…</string>
+    <!-- Text shown on the tab group suggestion card when no suggestion is currently available. -->
+    <string name="tab_group_suggestions_empty_state_title">No tab group suggestions right now</string>
+    <!-- Content description (not visible, for screen readers etc.): button that dismisses a tab group suggestion. -->
+    <string name="tab_group_suggestions_dismiss_content_description">Dismiss suggestion</string>
+    <!-- Title of the preference that navigates to the tab group suggestions settings screen. -->
+    <string name="preferences_tab_group_suggestions">Tab group suggestions</string>
+    <!-- Title of the switch preference that turns tab group suggestions on or off. -->
+    <string name="tab_group_suggestions_settings_toggle_title">Suggest tab groups</string>
+    <!-- Summary of the switch preference that turns tab group suggestions on or off. -->
+    <string name="tab_group_suggestions_settings_toggle_summary">Get suggestions to group similar open tabs together</string>
+    <!-- Title of the preference that resets previously dismissed tab group suggestions. -->
+    <string name="tab_group_suggestions_settings_reset_dismissed_title">Reset dismissed suggestions</string>
+    <!-- Summary of the preference that resets previously dismissed tab group suggestions. -->
+    <string name="tab_group_suggestions_settings_reset_dismissed_summary">Previously dismissed suggestions may be shown again</string>
+    <!-- Snackbar message shown after the user resets previously dismissed tab group suggestions. -->
+    <string name="tab_group_suggestions_settings_reset_dismissed_confirmation">Dismissed suggestions reset</string>
+
     <!-- Accessibility services actions labels. These will be appended to accessibility actions like "Double tap to.." but not by or applications but by services like Talkback. -->
     <!-- Action label for elements that can be collapsed if interacting with them. Talkback will append this to say "Double tap to collapse". -->
     <string name="a11y_action_label_collapse">collapse</string>

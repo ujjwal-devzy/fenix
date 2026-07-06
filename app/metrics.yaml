@@ -8258,6 +8258,100 @@ recent_bookmarks:
     expires: 120
     unit: integer
 
+tab_group_suggestions:
+  shown:
+    type: event
+    description: |
+      A tab group suggestion was shown to the user, either in the home screen
+      card or in the tabs tray.
+    extra_keys:
+      suggestion_id:
+        description: |
+          The identifier of the suggestion that was shown, derived from the
+          sorted set of tab ids it groups together.
+        type: string
+      tab_count:
+        description: |
+          The number of tabs included in the suggestion that was shown.
+        type: quantity
+    bugs:
+      - https://github.com/mozilla-mobile/fenix/issues/29812
+    data_reviews:
+      - https://github.com/mozilla-mobile/fenix/pull/29900
+    data_sensitivity:
+      - interaction
+    notification_emails:
+      - android-probes@mozilla.com
+    expires: 125
+    metadata:
+      tags:
+        - TabGroupSuggestions
+  accepted:
+    type: event
+    description: |
+      The user accepted a tab group suggestion and saved the suggested tabs
+      together.
+    extra_keys:
+      suggestion_id:
+        description: |
+          The identifier of the suggestion that was accepted.
+        type: string
+      tab_count:
+        description: |
+          The number of tabs included in the accepted suggestion.
+        type: quantity
+    bugs:
+      - https://github.com/mozilla-mobile/fenix/issues/29812
+    data_reviews:
+      - https://github.com/mozilla-mobile/fenix/pull/29900
+    data_sensitivity:
+      - interaction
+    notification_emails:
+      - android-probes@mozilla.com
+    expires: 125
+    metadata:
+      tags:
+        - TabGroupSuggestions
+  dismissed:
+    type: event
+    description: |
+      The user dismissed a tab group suggestion without acting on it.
+    extra_keys:
+      suggestion_id:
+        description: |
+          The identifier of the suggestion that was dismissed.
+        type: string
+      tab_count:
+        description: |
+          The number of tabs included in the dismissed suggestion.
+        type: quantity
+    bugs:
+      - https://github.com/mozilla-mobile/fenix/issues/29812
+    data_reviews:
+      - https://github.com/mozilla-mobile/fenix/pull/29900
+    data_sensitivity:
+      - interaction
+    notification_emails:
+      - android-probes@mozilla.com
+    expires: 125
+    metadata:
+      tags:
+        - TabGroupSuggestions
+  section_visible:
+    type: boolean
+    description: |
+      An indication of whether the tab group suggestions card is visible on
+      the home screen.
+    bugs:
+      - https://github.com/mozilla-mobile/fenix/issues/29812
+    data_reviews:
+      - https://github.com/mozilla-mobile/fenix/pull/29900
+    data_sensitivity:
+      - interaction
+    notification_emails:
+      - android-probes@mozilla.com
+    expires: 125
+
 recent_searches:
   group_deleted:
     type: event
