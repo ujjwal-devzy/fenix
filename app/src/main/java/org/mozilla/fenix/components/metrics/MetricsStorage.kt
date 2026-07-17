@@ -18,6 +18,7 @@ import org.mozilla.fenix.utils.Settings
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 /**
  * Interface defining functions around persisted local state for certain metrics.
@@ -207,15 +208,17 @@ internal class DefaultMetricsStorage(
     }
 
     companion object {
-        private const val dayMillis: Long = 1000 * 60 * 60 * 24
-        private const val shortestMonthMillis: Long = dayMillis * 28
+        private const val daySeconds: Long = 60 * 60 * 24
+        private val dayMillis: Long = TimeUnit.SECONDS.toMillis(daySeconds)
+        private val shortestMonthMillis: Long = dayMillis * 28
 
         // Note this is 8 so that recording of FirstWeekSeriesActivity happens throughout the length
         // of the 7th day after install
-        private const val fullWeekMillis: Long = dayMillis * 8
+        private val fullWeekMillis: Long = dayMillis * 8
 
         // The usage threshold we are interested in is currently 340 seconds.
-        private const val usageThresholdMillis = 1000 * 340
+        private const val usageThresholdSeconds: Long = 340
+        private val usageThresholdMillis = TimeUnit.SECONDS.toMillis(usageThresholdSeconds)
 
         /**
          * Determines whether events should be tracked based on some general criteria:
