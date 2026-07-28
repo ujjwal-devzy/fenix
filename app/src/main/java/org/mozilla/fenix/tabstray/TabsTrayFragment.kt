@@ -32,12 +32,15 @@ import mozilla.components.feature.downloads.ui.DownloadCancelDialogFragment
 import mozilla.components.feature.tabs.tabstray.TabsFeature
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.telemetry.glean.private.NoExtras
+import org.mozilla.fenix.FeatureFlags
 import org.mozilla.fenix.GleanMetrics.TabsTray
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.StoreProvider
+import org.mozilla.fenix.components.tabgroupsuggestions.TabGroupSuggestion
+import org.mozilla.fenix.components.tabgroupsuggestions.store.TabGroupSuggestionAction
 import org.mozilla.fenix.databinding.ComponentTabstray2Binding
 import org.mozilla.fenix.databinding.ComponentTabstrayFabBinding
 import org.mozilla.fenix.databinding.FragmentTabTrayDialogBinding
@@ -59,6 +62,7 @@ import org.mozilla.fenix.tabstray.ext.collectionMessage
 import org.mozilla.fenix.tabstray.ext.make
 import org.mozilla.fenix.tabstray.ext.showWithTheme
 import org.mozilla.fenix.tabstray.syncedtabs.SyncedTabsIntegration
+import org.mozilla.fenix.tabstray.tabgroupsuggestions.TabGroupSuggestionsTrayBinding
 import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.utils.allowUndo
 import kotlin.math.max
@@ -91,6 +95,7 @@ class TabsTrayFragment : AppCompatDialogFragment() {
     private val tabsFeature = ViewBoundFeatureWrapper<TabsFeature>()
     private val tabsTrayInactiveTabsOnboardingBinding = ViewBoundFeatureWrapper<TabsTrayInactiveTabsOnboardingBinding>()
     private val syncedTabsIntegration = ViewBoundFeatureWrapper<SyncedTabsIntegration>()
+    private val tabGroupSuggestionsTrayBinding = ViewBoundFeatureWrapper<TabGroupSuggestionsTrayBinding>()
 
     @VisibleForTesting
     @Suppress("VariableNaming")
@@ -389,6 +394,18 @@ class TabsTrayFragment : AppCompatDialogFragment() {
             view = view,
         )
 
+        if (FeatureFlags.tabGroupSuggestionsFeature && requireContext().settings().tabGroupSuggestionsEnabled) {
+            tabGroupSuggestionsTrayBinding.set(
+                feature = TabGroupSuggestionsTrayBinding(
+                    tabGroupSuggestionStore = requireComponents.tabGroupSuggestionStore,
+                    onSuggestionAvailable = ::showTabGroupSuggestionSnackbar,
+                    onSuggestionAccepted = { dismissTabsTray() },
+                ),
+                owner = this,
+                view = view,
+            )
+        }
+
         setFragmentResultListener(ShareFragment.RESULT_KEY) { _, _ ->
             dismissTabsTray()
         }
@@ -579,6 +596,19 @@ class TabsTrayFragment : AppCompatDialogFragment() {
                     TabsTrayFragmentDirections.actionGlobalBookmarkFragment(BookmarkRoot.Mobile.id),
                 )
                 dismissTabsTray()
+            }
+            .show()
+    }
+
+    @VisibleForTesting
+    internal fun showTabGroupSuggestionSnackbar(suggestion: TabGroupSuggestion) {
+        FenixSnackbar
+            .make(requireView())
+            .setText(getString(R.string.tab_group_suggestions_card_title))
+            .anchorWithAction(getSnackbarAnchor()) {
+                requireComponents.tabGroupSuggestionStore.dispatch(
+                    TabGroupSuggestionAction.SuggestionAccepted(suggestion.id),
+                )
             }
             .show()
     }

@@ -701,6 +701,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_settingsFragment_to_tabGroupSuggestionSettingsFragment"
+            app:destination="@id/tabGroupSuggestionSettingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <dialog
         android:id="@+id/profilerStartDialogFragment"
@@ -714,6 +721,10 @@
         android:id="@+id/tabsSettingsFragment"
         android:name="org.mozilla.fenix.settings.TabsSettingsFragment"
         android:label="@string/preferences_tabs" />
+    <fragment
+        android:id="@+id/tabGroupSuggestionSettingsFragment"
+        android:name="org.mozilla.fenix.settings.TabGroupSuggestionSettingsFragment"
+        android:label="@string/preferences_tab_group_suggestions" />
     <fragment
         android:id="@+id/homeSettingsFragment"
         android:name="org.mozilla.fenix.settings.HomeSettingsFragment"

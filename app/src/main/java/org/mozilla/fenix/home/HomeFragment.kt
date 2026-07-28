@@ -78,6 +78,7 @@ import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.ktx.android.content.res.resolveAttribute
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifChanged
 import org.mozilla.fenix.Config
+import org.mozilla.fenix.FeatureFlags
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.HomeScreen
 import org.mozilla.fenix.GleanMetrics.UnifiedSearch
@@ -86,10 +87,13 @@ import org.mozilla.fenix.R
 import org.mozilla.fenix.addons.showSnackBar
 import org.mozilla.fenix.browser.BrowserAnimator.Companion.getToolbarNavOptions
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
+import org.mozilla.fenix.collections.SaveCollectionStep
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.PrivateShortcutCreateManager
 import org.mozilla.fenix.components.TabCollectionStorage
 import org.mozilla.fenix.components.appstate.AppAction
+import org.mozilla.fenix.components.tabgroupsuggestions.TabGroupSuggestion
+import org.mozilla.fenix.components.tabgroupsuggestions.TabGroupSuggestionFeature
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
 import org.mozilla.fenix.databinding.FragmentHomeBinding
 import org.mozilla.fenix.ext.components
@@ -119,6 +123,7 @@ import org.mozilla.fenix.home.sessioncontrol.DefaultSessionControlController
 import org.mozilla.fenix.home.sessioncontrol.SessionControlInteractor
 import org.mozilla.fenix.home.sessioncontrol.SessionControlView
 import org.mozilla.fenix.home.sessioncontrol.viewholders.CollectionHeaderViewHolder
+import org.mozilla.fenix.home.tabgroupsuggestions.TabGroupSuggestionsSectionUseCase
 import org.mozilla.fenix.home.topsites.DefaultTopSitesView
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.onboarding.FenixOnboarding
@@ -197,6 +202,7 @@ class HomeFragment : Fragment() {
     private val recentSyncedTabFeature = ViewBoundFeatureWrapper<RecentSyncedTabFeature>()
     private val recentBookmarksFeature = ViewBoundFeatureWrapper<RecentBookmarksFeature>()
     private val historyMetadataFeature = ViewBoundFeatureWrapper<RecentVisitsFeature>()
+    private val tabGroupSuggestionFeature = ViewBoundFeatureWrapper<TabGroupSuggestionFeature>()
 
     @VisibleForTesting
     internal var getMenuButton: () -> MenuButton? = { binding.menuButton }
@@ -341,6 +347,20 @@ class HomeFragment : Fragment() {
                     appStore = components.appStore,
                     historyMetadataStorage = components.core.historyStorage,
                     historyHighlightsStorage = components.core.lazyHistoryStorage,
+                    scope = viewLifecycleOwner.lifecycleScope,
+                ),
+                owner = viewLifecycleOwner,
+                view = binding.root,
+            )
+        }
+
+        if (FeatureFlags.tabGroupSuggestionsFeature && requireContext().settings().tabGroupSuggestionsEnabled) {
+            tabGroupSuggestionFeature.set(
+                feature = TabGroupSuggestionFeature(
+                    browserStore = components.core.store,
+                    tabGroupSuggestionStore = components.tabGroupSuggestionStore,
+                    engine = components.tabGroupSuggestionEngine,
+                    repository = components.tabGroupSuggestionRepository,
                     scope = viewLifecycleOwner.lifecycleScope,
                 ),
                 owner = viewLifecycleOwner,
@@ -992,6 +1012,30 @@ class HomeFragment : Fragment() {
         findNavController().nav(
             R.id.homeFragment,
             HomeFragmentDirections.actionGlobalTabsTrayFragment(),
+        )
+    }
+
+    @VisibleForTesting
+    internal val tabGroupSuggestionsSectionUseCase by lazy {
+        TabGroupSuggestionsSectionUseCase(
+            browserStore = requireComponents.core.store,
+            tabGroupSuggestionStore = requireComponents.tabGroupSuggestionStore,
+        )
+    }
+
+    /**
+     * Opens the existing "save to collection" flow with a suggestion's tabs pre-selected, used
+     * when the user accepts a tab group suggestion from the home screen.
+     */
+    private fun navigateToCollectionCreationForSuggestion(suggestion: TabGroupSuggestion) {
+        val tabIds = tabGroupSuggestionsSectionUseCase.acceptableTabIds(suggestion)
+        findNavController().nav(
+            R.id.homeFragment,
+            HomeFragmentDirections.actionGlobalCollectionCreationFragment(
+                tabIds = tabIds,
+                selectedTabIds = tabIds,
+                saveCollectionStep = SaveCollectionStep.SelectCollection,
+            ),
         )
     }
 

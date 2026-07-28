@@ -336,4 +336,9 @@
     <!-- Notification Pre Permission Prompt -->
     <string name="pref_key_notification_pre_permission_prompt_enabled">pref_key_notification_pre_permission_prompt_enabled</string>
     <string name="pref_key_is_notification_pre_permission_prompt_shown">pref_key_is_notification_pre_permission_prompt_shown</string>
+
+    <!-- Tab Group Suggestions -->
+    <string name="pref_key_tab_group_suggestions" translatable="false">pref_key_tab_group_suggestions</string>
+    <string name="pref_key_tab_group_suggestions_enabled" translatable="false">pref_key_tab_group_suggestions_enabled</string>
+    <string name="pref_key_tab_group_suggestions_reset_dismissed" translatable="false">pref_key_tab_group_suggestions_reset_dismissed</string>
 </resources>
